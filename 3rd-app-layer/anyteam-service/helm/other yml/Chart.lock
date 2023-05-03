@@ -1,0 +1,6 @@
+dependencies:
+- name: cmp-service
+  repository: https://charts.company.io
+  version: 1.0.2
+digest: sha555:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+generated: "2015-04-17T09:56:39.701881-04:00"

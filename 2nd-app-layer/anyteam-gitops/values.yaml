@@ -1,0 +1,85 @@
+#This is where you add the source of the service, in this example we use the source of "anyteam-service-repo"
+
+#Only 2 clusters per this example; staging and production.
+staging_cluster: &staging_cluster "https://99AA999AAAA9A99AAA9AA99A9A9999A9.sk1.us-east-1.eks.amazonaws.com"
+prod_cluster: &prod_cluster "https://88CCC88CCC88C8C888C88C8888CC88C8.gr7.us-east-1.eks.amazonaws.com"
+applications:
+  anyteam-service-prod:
+    destination:
+      namespace: anyteam-service
+      server: *prod_cluster
+    notificationChannel: anyteam-deploy
+    source:
+      path: helm
+      repoURL: git@github.com:moise-abety/anyteam-gitops.git
+      targetRevision: c545cd454545cd4d45d4455c55cdcd5cd555c555
+      helm:
+        valueFiles:
+          - values.yaml
+          - prod.yaml
+          - secrets.prod.yaml
+        parameters:
+          - name: cmp-service.image.tag #company tag
+            value: c545cd454545cd4d45d4455c55cdcd5cd555c555
+  anyteam-service-staging:
+    destination:
+      namespace: anyteam-service
+      server: *staging_cluster
+    notificationChannel: anyteam-deploy
+    source:
+      path: helm
+      repoURL: git@github.com:moise-abety/anyteam-gitops.git
+      targetRevision: c545cd454545cd4d45d4455c55cdcd5cd555c555
+      helm:
+        valueFiles:
+          - values.yaml 
+          - staging.yaml
+          - secrets.staging.yaml
+          #If more envs are present in the team's service, more values.yaml files would be created for each (e.g. values-dev.yaml)
+        parameters:
+          - name: cmp-service.image.tag #company tag
+            value: c545cd454545cd4d45d4455c55cdcd5cd555c555
+
+
+
+
+
+
+
+
+ ####### anyteam-service-2 #######        
+  # anyteam-service-2-prod:
+  #   destination:
+  #     namespace: anyteam-service-2
+  #     server: *prod_cluster
+  #   notificationChannel: anyteam-deploy
+  #   source:
+  #     path: helm
+  #     repoURL: git@github.com:moise-abety/anyteam-gitops.git
+  #     targetRevision: c545cd454545cd4d45d4455c55cdcd5cd555c555
+  #     helm:
+  #       valueFiles:
+  #         - values.yaml
+  #         - prod.yaml
+  #         - secrets.prod.yaml
+  #       parameters:
+  #         - name: cmp-service.image.tag
+  #           value: c545cd454545cd4d45d4455c55cdcd5cd555c555
+  # anyteam-service-2-staging:
+  #   destination:
+  #     namespace: anyteam-service-2
+  #     server: *staging_cluster
+  #   notificationChannel: anyteam-deploy
+  #   source:
+  #     path: helm
+  #     repoURL: git@github.com:moise-abety/anyteam-gitops.git
+  #     targetRevision: c545cd454545cd4d45d4455c55cdcd5cd555c555
+  #     helm:
+  #       valueFiles:
+  #         - values.yaml 
+  #         - staging.yaml
+  #         - secrets.staging.yaml
+  #       parameters:
+  #         - name: cmp-service.image.tag 
+  #           value: c545cd454545cd4d45d4455c55cdcd5cd555c555
+          

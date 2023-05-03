@@ -1,0 +1,8 @@
+#this is a helm chart to create your gitops service/app on k8s, in this we are calling it "anyteam-gitops"
+
+apiVersion: v2
+name: anyteam-gitops
+description: GitOps manifests for anyteam services
+type: application
+version: 0.1.0
+appVersion: 0.1.0

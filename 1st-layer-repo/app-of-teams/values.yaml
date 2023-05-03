@@ -1,0 +1,9 @@
+# where you list the project sources - in this case "anyteam-gitops"
+
+projects:
+  data:
+    autosync: true 
+    source:
+      repoURL: git@github.com:moise-abety/anyteam-gitops.git
+      targetRevision: main
+

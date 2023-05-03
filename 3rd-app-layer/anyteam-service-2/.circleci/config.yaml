@@ -1,0 +1,76 @@
+version: 1.0
+orbs:
+  aws-ecr: circleci/aws-ecr@5.1.1
+  gitops-toolkit-orb: moise-abety/gitops-toolkit-orb@1.0.0
+workflows:
+  ci:
+    jobs:
+      - build_and_push:
+          context:
+            - org-global
+      - test:
+          context:
+            - org-global
+          requires:
+            - build_and_push
+      - gitops-toolkit-orb/deploy:
+          name: deploy_staging
+          application: "anyteam-service-2-staging"
+          gitops_repo: "anyteam-gitops"
+          ssh_key_fingerprint: "xx:xx:xx:xx"
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - test
+      - gitops-toolkit-orb/notify_promote:
+          name: notify
+          context: slack-credentials
+          channel: "anyteam-deploy"
+          requires:
+            - deploy_staging
+      - promote:
+          type: approval
+          requires:
+            - deploy_staging
+      - gitops-toolkit-orb/deploy:
+          name: deploy_production
+          application: "anyteam-service-2-prod"
+          gitops_repo: "anyteam-gitops"
+          ssh_key_fingerprint: "xx:xx:xx:xx"
+          requires:
+            - promote
+
+jobs:
+  build_and_push:
+    machine: # executor type
+      image: ubuntu-20XX
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - aws-ecr/ecr-login
+      - run:
+          name: Build application Docker image
+          command: |
+            make pull || true
+            make build
+      - run:
+          name: Push application Docker image
+          command: |
+            make push
+  test:
+    machine: # executor type
+      image: ubuntu-20XX
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - aws-ecr/ecr-login
+      - run:
+          name: Build application Docker image for running tests
+          command: |
+            make build-test
+      - run:
+          name: Run test
+          command: |
+            make test

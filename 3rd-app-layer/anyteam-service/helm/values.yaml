@@ -1,0 +1,55 @@
+sb-service:
+  nameOverride: anyteam-service-prod
+  image:
+    registry: xxxxxxxxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com
+    name: anyteam-service-prod
+    tag: 9f715f2
+
+  # Main container port
+  ports:
+    - name: http
+      containerPort: 80
+
+  podAnnotations:
+    sidecar.istio.io/inject: "true"
+
+  # Pod resource requests and limits
+  resources:
+     limits:
+       cpu: 100m
+       memory: 128Mi
+     requests:
+       cpu: 100m
+       memory: 128Mi
+
+  # HPA configuration
+  scaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+
+  # Probes
+  startupProbe:
+    httpGet:
+     path: /healthcheck
+     port: 80
+    initialDelaySeconds: 1
+
+  readinessProbe:
+    httpGet:
+     path: /healthcheck
+     port: 80
+
+  livenessProbe:
+    httpGet:
+     path: /healthcheck
+     port: 80
+    timeoutSeconds: 35
+    periodSeconds: 5

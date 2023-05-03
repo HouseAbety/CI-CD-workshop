@@ -1,0 +1,48 @@
+#values for creating app defined by chart.yaml
+
+appName: &appName argocd
+domain: &domain argocd.company.io
+domainWithProtocol: &domainWithProtocol https://argocd.company.io
+port: 80
+
+argocd-apps:
+  applications:
+    - name: argocd
+      namespace: argocd
+      additionalLabels: {}
+      additionalAnnotations: {}
+      project: platform
+      source:
+        repoURL: git@github.com:moise-abety/infrastructure.git
+        targetRevision: master
+        path: kubernetes/charts/argocd
+        helm:
+          valueFiles:
+          - secrets.yaml
+          - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy: {}
+    - name: app-of-teams
+      namespace: argocd
+      additionalLabels: {}
+      additionalAnnotations: {}
+      project: argocd
+      source:
+        repoURL: git@github.com:moise-abety/infrastructure.git
+        targetRevision: master
+        path: kubernetes/charts/app-of-teams
+        helm:
+          valueFiles:
+          - values.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - ApplyOutOfSyncOnly=true
+          - RespectIgnoreDifferences=true

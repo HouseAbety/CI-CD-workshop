@@ -1,0 +1,16 @@
+#this is a helm chart that creates the argo-cd app
+
+apiVersion: v2
+name: argocd
+description: >
+  Deploys the upstream https://github.com/argoproj/argo-helm/tree/master/charts/argo-cd and https://github.com/argoproj/argo-helm/tree/master/charts/argo-applicationset charts with custom values per specific company.
+type: application
+version: 1.0.0
+appVersion: 0.0.0
+dependencies:
+  - name: argo-cd
+    version: ~5.13.5
+    repository: "https://argoproj.github.io/argo-helm"
+  - name: argocd-apps
+    version: ~0.0.3
+    repository: "https://argoproj.github.io/argo-helm"

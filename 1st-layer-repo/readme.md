@@ -1,0 +1,3 @@
+# The infrastructure repo is our "foundational" repository where all essential components used for a myriad of projects are stored or bootstrapped to. These include IaC, container registry, observatory applications etc. It is the repo countless other repos feed from to properly function.
+# It represents the FIRST LAYER of the app-of-app-of-apps structure.
+# Allows the use of only the necessary tools for any given service.
